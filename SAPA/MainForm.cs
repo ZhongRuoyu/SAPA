@@ -257,8 +257,9 @@ namespace SAPA
         private void ShowAbout(object sender, EventArgs e)
         {
             MessageBox.Show(
-                "Simple Automated Programming Assessor (SAPA)\n" +
-                "(c) 2020 Zhong Ruoyu",
+                "Simple Automated Programming Assessor (SAPA)\n"
+                + "(c) 2020 Zhong Ruoyu\n"
+                + "Licensed under the MIT License.",
                 "About",
                 MessageBoxButtons.OK
             );
