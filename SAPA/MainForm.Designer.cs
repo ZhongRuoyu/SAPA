@@ -108,7 +108,6 @@ namespace SAPA
             // btnSubmit
             // 
             this.btnSubmit.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.btnSubmit.Enabled = false;
             this.btnSubmit.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F);
             this.btnSubmit.Location = new System.Drawing.Point(3, 203);
             this.btnSubmit.Name = "btnSubmit";
