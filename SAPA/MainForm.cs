@@ -32,7 +32,6 @@ namespace SAPA
             // tempInput = "_sapa_input.txt",
             tempExec = "_sapa_exec.exe";
 
-        readonly int compileTimeout = 10000;
         readonly int execTimeout = 3000;
 
         private void Initialise(object sender, EventArgs e)
@@ -166,6 +165,7 @@ namespace SAPA
                 = tempPath + "/" + tempSourceName
                 + ((currentMode == Mode.c) ? ".c" : ".cpp");
             System.IO.File.WriteAllLines(tempSourcePath, textBoxSource.Lines);
+            textBoxOutput.Text = "Compiling...";
             System.Diagnostics.Process compilerProcess = new System.Diagnostics.Process();
             compilerProcess.StartInfo.FileName = (currentMode == Mode.c ? gccPath : gppPath);
             compilerProcess.StartInfo.Arguments = tempSourcePath + " -o " + tempExecPath;
@@ -173,31 +173,29 @@ namespace SAPA
             compilerProcess.StartInfo.UseShellExecute = false;
             compilerProcess.StartInfo.RedirectStandardError = true;
             compilerProcess.Start();
-            if (!compilerProcess.WaitForExit(execTimeout))
-            {
-                compilerProcess.Kill();
-            }
             string[] stderr = compilerProcess.StandardError.ReadToEnd().Split('\n');
             int compilerStatus = compilerProcess.ExitCode;
             if (compilerStatus != 0)
             {
                 MessageBox.Show(
-                    "Compilation failed. Compiler returned " + compilerStatus.ToString() + ".",
+                    "Compilation failed.\n"
+                    + "Compiler returned " + compilerStatus.ToString() + ".",
                     "Failure",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Warning
                 );
-                textBoxOutput.Lines = stderr;
-                return;
             }
-            MessageBox.Show(
-                "Compilation successful.",
-                "Success",
-                MessageBoxButtons.OK,
-                MessageBoxIcon.Information
-            );
+            else
+            {
+                MessageBox.Show(
+                    "Compilation successful.",
+                    "Success",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information
+                );
+                compiled = true;
+            }
             textBoxOutput.Lines = stderr;
-            compiled = true;
             compilerProcess.Close();
         }
 
