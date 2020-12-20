@@ -149,7 +149,7 @@ namespace SAPA
             this.btnOpenSource.Name = "btnOpenSource";
             this.btnOpenSource.Size = new System.Drawing.Size(188, 44);
             this.btnOpenSource.TabIndex = 1;
-            this.btnOpenSource.Text = "Open Source...";
+            this.btnOpenSource.Text = "&Open Source...";
             this.btnOpenSource.UseVisualStyleBackColor = true;
             this.btnOpenSource.Click += new System.EventHandler(this.OpenSourceFile);
             // 
