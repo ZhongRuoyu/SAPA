@@ -25,12 +25,12 @@ namespace SAPA
 
         string path,
             gccPath, gppPath,
-            tempPath, tempSourcePath, tempInputPath, tempExecPath;
+            tempPath, tempSourcePath, tempExecPath;
+        // string tempInputPath;
         string sourcePath, inputPath;
         readonly string tempSourceName = "_sapa_source",
-            tempInput = "_sapa_input.txt",
-            tempExec = "_sapa_exec.exe",
-            tempExexProcessName = "_sapa_exec";
+            // tempInput = "_sapa_input.txt",
+            tempExec = "_sapa_exec.exe";
 
         readonly int compileTimeout = 10000;
         readonly int execTimeout = 3000;
@@ -39,7 +39,7 @@ namespace SAPA
         {
             path = System.IO.Directory.GetCurrentDirectory();
             tempPath = path + "/_sapa_temp";
-            tempInputPath = tempPath + "/" + tempInput;
+            // tempInputPath = tempPath + "/" + tempInput;
             tempExecPath = tempPath + "/" + tempExec;
             try
             {
@@ -167,13 +167,10 @@ namespace SAPA
                 + ((currentMode == Mode.c) ? ".c" : ".cpp");
             System.IO.File.WriteAllLines(tempSourcePath, textBoxSource.Lines);
             System.Diagnostics.Process compilerProcess = new System.Diagnostics.Process();
-            compilerProcess.StartInfo.FileName = "cmd.exe";
-            compilerProcess.StartInfo.Arguments
-                = "/c " + (currentMode == Mode.c ? gccPath : gppPath)
-                + " " + tempSourcePath + " -o " + tempExecPath;
+            compilerProcess.StartInfo.FileName = (currentMode == Mode.c ? gccPath : gppPath);
+            compilerProcess.StartInfo.Arguments = tempSourcePath + " -o " + tempExecPath;
             compilerProcess.StartInfo.CreateNoWindow = true;
             compilerProcess.StartInfo.UseShellExecute = false;
-            compilerProcess.StartInfo.RedirectStandardOutput = true;
             compilerProcess.StartInfo.RedirectStandardError = true;
             compilerProcess.Start();
             if (!compilerProcess.WaitForExit(execTimeout))
@@ -226,14 +223,22 @@ namespace SAPA
                 }
             }
             textBoxOutput.Text = "Running input...";
-            System.IO.File.WriteAllLines(tempInputPath, textBoxInput.Lines);
+            // System.IO.File.WriteAllLines(tempInputPath, textBoxInput.Lines);
             System.Diagnostics.Process execProcess = new System.Diagnostics.Process();
-            execProcess.StartInfo.FileName = "cmd.exe";
-            execProcess.StartInfo.Arguments = "/c " + tempExecPath + " <" + tempInputPath;
+            // execProcess.StartInfo.FileName = "cmd.exe";
+            // execProcess.StartInfo.Arguments = "/c " + tempExecPath + " <" + tempInputPath;
+            execProcess.StartInfo.FileName = tempExecPath;
             execProcess.StartInfo.CreateNoWindow = true;
             execProcess.StartInfo.UseShellExecute = false;
+            execProcess.StartInfo.RedirectStandardInput = true;
             execProcess.StartInfo.RedirectStandardOutput = true;
+            // string[] stdin = System.IO.File.ReadAllLines(tempInputPath);
             execProcess.Start();
+            foreach (string line in textBoxInput.Lines)
+            {
+                execProcess.StandardInput.WriteLine(line);
+            }
+            execProcess.StandardInput.Close();
             if (execProcess.WaitForExit(execTimeout))
             {
                 string[] stdout = execProcess.StandardOutput.ReadToEnd().Split('\n');
@@ -241,12 +246,7 @@ namespace SAPA
             }
             else
             {
-                System.Diagnostics.Process[] childProcesses
-                    = System.Diagnostics.Process.GetProcessesByName("_sapa_exec");
-                foreach (System.Diagnostics.Process childProcess in childProcesses)
-                {
-                    childProcess.Kill();
-                }
+                execProcess.Kill();
                 // MessageBox.Show("Timeout reached.", "Timeout Reached",
                 //     MessageBoxButtons.OK, MessageBoxIcon.Error);
                 textBoxOutput.Text = "Timeout reached.";
