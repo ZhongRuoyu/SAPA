@@ -1,12 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.IO;
+using System.Diagnostics;
 
 namespace SAPA
 {
@@ -19,30 +14,28 @@ namespace SAPA
         };
         Mode currentMode = Mode.c;
 
-        // bool sourceOpen = false;
         bool compiled = false;
         readonly bool builtinCompiler = false;
 
-        string path,
+        string
+            path,
             gccPath, gppPath,
             tempPath, tempSourcePath, tempExecPath;
-        // string tempInputPath;
         string sourcePath, inputPath;
-        readonly string tempSourceName = "_sapa_source",
-            // tempInput = "_sapa_input.txt",
-            tempExec = "_sapa_exec.exe";
+        readonly string
+            tempSourceFileName = "_sapa_source",
+            tempExecFile = "_sapa_exec.exe";
 
         readonly int execTimeout = 3000;
 
         private void Initialise(object sender, EventArgs e)
         {
-            path = System.IO.Directory.GetCurrentDirectory();
+            path = Directory.GetCurrentDirectory();
             tempPath = path + "/_sapa_temp";
-            // tempInputPath = tempPath + "/" + tempInput;
-            tempExecPath = tempPath + "/" + tempExec;
+            tempExecPath = tempPath + "/" + tempExecFile;
             try
             {
-                System.IO.Directory.CreateDirectory(tempPath);
+                Directory.CreateDirectory(tempPath);
             }
             catch
             {
@@ -58,7 +51,7 @@ namespace SAPA
             {
                 gccPath = path + "/mingw64/bin/gcc.exe";
                 gppPath = path + "/mingw64/bin/g++.exe";
-                if (!System.IO.File.Exists(gccPath))
+                if (!File.Exists(gccPath))
                 {
                     MessageBox.Show(
                         "gcc.exe could not be located.",
@@ -68,7 +61,7 @@ namespace SAPA
                     );
                     Application.Exit();
                 }
-                if (!System.IO.File.Exists(gppPath))
+                if (!File.Exists(gppPath))
                 {
                     MessageBox.Show(
                         "g++.exe could not be located.",
@@ -87,7 +80,7 @@ namespace SAPA
 
         }
 
-        private void textBoxSource_TextChanged(object sender, EventArgs e)
+        private void TextBoxSource_TextChanged(object sender, EventArgs e)
         {
             compiled = false;
         }
@@ -104,8 +97,8 @@ namespace SAPA
                 try
                 {
                     sourcePath = sourceOpenFileDialog.FileName;
-                    textBoxSource.Lines = System.IO.File.ReadAllLines(sourcePath);
-                    if (System.IO.Path.GetExtension(sourcePath) == ".c")
+                    textBoxSource.Lines = File.ReadAllLines(sourcePath);
+                    if (Path.GetExtension(sourcePath) == ".c")
                     {
                         currentMode = Mode.c;
                     }
@@ -132,7 +125,7 @@ namespace SAPA
                 try
                 {
                     inputPath = inputOpenFileDialog.FileName;
-                    textBoxInput.Lines = System.IO.File.ReadAllLines(inputPath);
+                    textBoxInput.Lines = File.ReadAllLines(inputPath);
                 }
                 catch
                 {
@@ -162,11 +155,11 @@ namespace SAPA
             compiled = false;
             if (!CheckSource()) return;
             tempSourcePath
-                = tempPath + "/" + tempSourceName
+                = tempPath + "/" + tempSourceFileName
                 + ((currentMode == Mode.c) ? ".c" : ".cpp");
-            System.IO.File.WriteAllLines(tempSourcePath, textBoxSource.Lines);
+            File.WriteAllLines(tempSourcePath, textBoxSource.Lines);
             textBoxOutput.Text = "Compiling...";
-            System.Diagnostics.Process compilerProcess = new System.Diagnostics.Process();
+            Process compilerProcess = new Process();
             compilerProcess.StartInfo.FileName = (currentMode == Mode.c ? gccPath : gppPath);
             compilerProcess.StartInfo.Arguments = tempSourcePath + " -o " + tempExecPath;
             compilerProcess.StartInfo.CreateNoWindow = true;
@@ -221,16 +214,12 @@ namespace SAPA
                 }
             }
             textBoxOutput.Text = "Running input...";
-            // System.IO.File.WriteAllLines(tempInputPath, textBoxInput.Lines);
-            System.Diagnostics.Process execProcess = new System.Diagnostics.Process();
-            // execProcess.StartInfo.FileName = "cmd.exe";
-            // execProcess.StartInfo.Arguments = "/c " + tempExecPath + " <" + tempInputPath;
+            Process execProcess = new Process();
             execProcess.StartInfo.FileName = tempExecPath;
             execProcess.StartInfo.CreateNoWindow = true;
             execProcess.StartInfo.UseShellExecute = false;
             execProcess.StartInfo.RedirectStandardInput = true;
             execProcess.StartInfo.RedirectStandardOutput = true;
-            // string[] stdin = System.IO.File.ReadAllLines(tempInputPath);
             execProcess.Start();
             foreach (string line in textBoxInput.Lines)
             {

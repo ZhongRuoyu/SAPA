@@ -78,7 +78,7 @@ namespace SAPA
             this.textBoxSource.Size = new System.Drawing.Size(1212, 588);
             this.textBoxSource.TabIndex = 0;
             this.textBoxSource.WordWrap = false;
-            this.textBoxSource.TextChanged += new System.EventHandler(this.textBoxSource_TextChanged);
+            this.textBoxSource.TextChanged += new System.EventHandler(this.TextBoxSource_TextChanged);
             // 
             // buttonTableLayoutPanel
             // 
