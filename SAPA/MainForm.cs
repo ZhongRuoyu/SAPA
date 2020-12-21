@@ -115,6 +115,7 @@ namespace SAPA
                 // sourceOpen = true;
                 compiled = false;
                 textBoxOutput.Text = "";
+                textBoxSource.Focus();
             }
         }
 
@@ -132,6 +133,7 @@ namespace SAPA
                     MessageBox.Show("File could not be opened.", "Error Opening File",
                         MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
+                textBoxInput.Focus();
             }
         }
 
@@ -159,13 +161,15 @@ namespace SAPA
                 + ((currentMode == Mode.c) ? ".c" : ".cpp");
             File.WriteAllLines(tempSourcePath, textBoxSource.Lines);
             textBoxOutput.Text = "Compiling...";
-            Process compilerProcess = new Process();
-            compilerProcess.StartInfo.FileName = (currentMode == Mode.c ? gccPath : gppPath);
-            compilerProcess.StartInfo.Arguments = tempSourcePath + " -o " + tempExecPath;
-            compilerProcess.StartInfo.CreateNoWindow = true;
-            compilerProcess.StartInfo.UseShellExecute = false;
-            compilerProcess.StartInfo.RedirectStandardError = true;
-            compilerProcess.Start();
+            ProcessStartInfo startInfo = new ProcessStartInfo()
+            {
+                FileName = (currentMode == Mode.c ? gccPath : gppPath),
+                Arguments = tempSourcePath + " -o " + tempExecPath,
+                CreateNoWindow = true,
+                UseShellExecute = false,
+                RedirectStandardError = true
+            };
+            Process compilerProcess = Process.Start(startInfo);
             string[] stderr = compilerProcess.StandardError.ReadToEnd().Split('\n');
             int compilerStatus = compilerProcess.ExitCode;
             if (compilerStatus != 0)
@@ -214,13 +218,15 @@ namespace SAPA
                 }
             }
             textBoxOutput.Text = "Running input...";
-            Process execProcess = new Process();
-            execProcess.StartInfo.FileName = tempExecPath;
-            execProcess.StartInfo.CreateNoWindow = true;
-            execProcess.StartInfo.UseShellExecute = false;
-            execProcess.StartInfo.RedirectStandardInput = true;
-            execProcess.StartInfo.RedirectStandardOutput = true;
-            execProcess.Start();
+            ProcessStartInfo startInfo = new ProcessStartInfo()
+            {
+                FileName = tempExecPath,
+                CreateNoWindow = true,
+                UseShellExecute = false,
+                RedirectStandardInput = true,
+                RedirectStandardOutput = true
+            };
+            Process execProcess = Process.Start(startInfo);
             foreach (string line in textBoxInput.Lines)
             {
                 execProcess.StandardInput.WriteLine(line);
@@ -234,8 +240,6 @@ namespace SAPA
             else
             {
                 execProcess.Kill();
-                // MessageBox.Show("Timeout reached.", "Timeout Reached",
-                //     MessageBoxButtons.OK, MessageBoxIcon.Error);
                 textBoxOutput.Text = "Timeout reached.";
             }
             execProcess.Close();
