@@ -249,7 +249,7 @@ namespace SAPA
         {
             MessageBox.Show(
                 "Simple Automated Programming Assessor (SAPA)\n"
-                + "(c) 2020 Zhong Ruoyu\n"
+                + "(c) 2020 - 2021 Zhong Ruoyu\n"
                 + "Licensed under the MIT License.",
                 "About",
                 MessageBoxButtons.OK
