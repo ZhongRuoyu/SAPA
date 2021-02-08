@@ -9,8 +9,9 @@ namespace SAPA
     {
         enum Mode
         {
-            c,
+            c = 0,
             cpp,
+            java  // TODO
         };
         Mode currentMode = Mode.c;
 
@@ -88,6 +89,18 @@ namespace SAPA
         public MainForm()
         {
             InitializeComponent();
+            ChangeMode(Mode.c);
+        }
+
+        private void ChangeMode(Mode newMode)
+        {
+            currentMode = newMode;
+            comboBoxMode.SelectedIndex = (int)newMode;
+        }
+
+        private void ModeChangedByUser(object sender, EventArgs e)
+        {
+            currentMode = (Mode)comboBoxMode.SelectedIndex;
         }
 
         private void OpenSourceFile(object sender, EventArgs e)
@@ -100,11 +113,11 @@ namespace SAPA
                     textBoxSource.Lines = File.ReadAllLines(sourcePath);
                     if (Path.GetExtension(sourcePath) == ".c")
                     {
-                        currentMode = Mode.c;
+                        ChangeMode(Mode.c);
                     }
                     else
                     {
-                        currentMode = Mode.cpp;
+                        ChangeMode(Mode.cpp);
                     }
                 }
                 catch

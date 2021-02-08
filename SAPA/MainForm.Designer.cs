@@ -38,6 +38,8 @@ namespace SAPA
             this.btnOpenSource = new System.Windows.Forms.Button();
             this.btnCompile = new System.Windows.Forms.Button();
             this.btnAbout = new System.Windows.Forms.Button();
+            this.groupBoxMode = new System.Windows.Forms.GroupBox();
+            this.comboBoxMode = new System.Windows.Forms.ComboBox();
             this.textBoxOutput = new System.Windows.Forms.TextBox();
             this.textBoxInput = new System.Windows.Forms.TextBox();
             this.sourceOpenFileDialog = new System.Windows.Forms.OpenFileDialog();
@@ -45,6 +47,7 @@ namespace SAPA
             this.compilerOpenFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.mainTableLayoutPanel.SuspendLayout();
             this.buttonTableLayoutPanel.SuspendLayout();
+            this.groupBoxMode.SuspendLayout();
             this.SuspendLayout();
             // 
             // mainTableLayoutPanel
@@ -90,10 +93,11 @@ namespace SAPA
             this.buttonTableLayoutPanel.Controls.Add(this.btnOpenSource, 0, 0);
             this.buttonTableLayoutPanel.Controls.Add(this.btnCompile, 0, 2);
             this.buttonTableLayoutPanel.Controls.Add(this.btnAbout, 0, 5);
+            this.buttonTableLayoutPanel.Controls.Add(this.groupBoxMode, 0, 7);
             this.buttonTableLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.buttonTableLayoutPanel.Location = new System.Drawing.Point(1221, 3);
             this.buttonTableLayoutPanel.Name = "buttonTableLayoutPanel";
-            this.buttonTableLayoutPanel.RowCount = 7;
+            this.buttonTableLayoutPanel.RowCount = 8;
             this.mainTableLayoutPanel.SetRowSpan(this.buttonTableLayoutPanel, 2);
             this.buttonTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 50F));
             this.buttonTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 50F));
@@ -102,6 +106,7 @@ namespace SAPA
             this.buttonTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 50F));
             this.buttonTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 50F));
             this.buttonTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.buttonTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 72F));
             this.buttonTableLayoutPanel.Size = new System.Drawing.Size(194, 838);
             this.buttonTableLayoutPanel.TabIndex = 0;
             // 
@@ -177,6 +182,31 @@ namespace SAPA
             this.btnAbout.UseVisualStyleBackColor = true;
             this.btnAbout.Click += new System.EventHandler(this.ShowAbout);
             // 
+            // groupBoxMode
+            // 
+            this.groupBoxMode.Controls.Add(this.comboBoxMode);
+            this.groupBoxMode.Location = new System.Drawing.Point(3, 769);
+            this.groupBoxMode.Name = "groupBoxMode";
+            this.groupBoxMode.Size = new System.Drawing.Size(188, 66);
+            this.groupBoxMode.TabIndex = 0;
+            this.groupBoxMode.TabStop = false;
+            this.groupBoxMode.Text = "Mode";
+            // 
+            // comboBoxMode
+            // 
+            this.comboBoxMode.DisplayMember = "0";
+            this.comboBoxMode.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.comboBoxMode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxMode.FormattingEnabled = true;
+            this.comboBoxMode.Items.AddRange(new object[] {
+            "C",
+            "C++"});
+            this.comboBoxMode.Location = new System.Drawing.Point(3, 22);
+            this.comboBoxMode.Name = "comboBoxMode";
+            this.comboBoxMode.Size = new System.Drawing.Size(182, 28);
+            this.comboBoxMode.TabIndex = 7;
+            this.comboBoxMode.SelectedIndexChanged += new System.EventHandler(this.ModeChangedByUser);
+            // 
             // textBoxOutput
             // 
             this.textBoxOutput.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -187,7 +217,7 @@ namespace SAPA
             this.textBoxOutput.ReadOnly = true;
             this.textBoxOutput.ScrollBars = System.Windows.Forms.ScrollBars.Both;
             this.textBoxOutput.Size = new System.Drawing.Size(603, 244);
-            this.textBoxOutput.TabIndex = 8;
+            this.textBoxOutput.TabIndex = 9;
             this.textBoxOutput.WordWrap = false;
             // 
             // textBoxInput
@@ -199,7 +229,7 @@ namespace SAPA
             this.textBoxInput.Name = "textBoxInput";
             this.textBoxInput.ScrollBars = System.Windows.Forms.ScrollBars.Both;
             this.textBoxInput.Size = new System.Drawing.Size(603, 244);
-            this.textBoxInput.TabIndex = 7;
+            this.textBoxInput.TabIndex = 8;
             this.textBoxInput.WordWrap = false;
             // 
             // sourceOpenFileDialog
@@ -229,6 +259,7 @@ namespace SAPA
             this.mainTableLayoutPanel.ResumeLayout(false);
             this.mainTableLayoutPanel.PerformLayout();
             this.buttonTableLayoutPanel.ResumeLayout(false);
+            this.groupBoxMode.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -249,6 +280,8 @@ namespace SAPA
         private System.Windows.Forms.Button btnAbout;
         private System.Windows.Forms.OpenFileDialog inputOpenFileDialog;
         private System.Windows.Forms.OpenFileDialog compilerOpenFileDialog;
+        private System.Windows.Forms.GroupBox groupBoxMode;
+        private System.Windows.Forms.ComboBox comboBoxMode;
     }
 }
 
