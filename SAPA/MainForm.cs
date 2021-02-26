@@ -2,6 +2,7 @@
 using System.Windows.Forms;
 using System.IO;
 using System.Diagnostics;
+using System.Collections.Generic;
 
 namespace SAPA
 {
@@ -13,6 +14,18 @@ namespace SAPA
             cpp,
             java  // TODO
         };
+        readonly Dictionary<Mode, string> CompilerFileName = new Dictionary<Mode, string>()
+        {
+            {Mode.c, "gcc.exe"},
+            {Mode.cpp, "g++.exe"},
+            {Mode.java, "javac.exe"}
+        };
+        Dictionary<Mode, string> CompilerPath = new Dictionary<Mode, string>()
+        {
+            {Mode.c, "gcc.exe"},
+            {Mode.cpp, "g++.exe"},
+            {Mode.java, "javac.exe"}
+        };
         Mode currentMode = Mode.c;
 
         bool compiled = false;
@@ -20,7 +33,7 @@ namespace SAPA
 
         string
             path,
-            gccPath, gppPath,
+            gccPath, gppPath, javacPath,
             tempPath, tempSourcePath, tempExecPath;
         string sourcePath, inputPath;
         readonly string
@@ -31,7 +44,13 @@ namespace SAPA
 
         private void Initialise(object sender, EventArgs e)
         {
-            path = Path.GetTempPath();  // Directory.GetCurrentDirectory();
+            InitialiseWorkingDirectory();
+            InitialiseCompiler(builtinCompiler);
+        }
+
+        private void InitialiseWorkingDirectory()
+        {
+            path = Path.GetTempPath();
             tempPath = path + "/sapa";
             tempExecPath = tempPath + "/" + tempExecFile;
             try
@@ -48,37 +67,13 @@ namespace SAPA
                 );
                 Application.Exit();
             }
-            if (builtinCompiler)
-            {
-                gccPath = path + "/mingw64/bin/gcc.exe";
-                gppPath = path + "/mingw64/bin/g++.exe";
-                if (!File.Exists(gccPath))
-                {
-                    MessageBox.Show(
-                        "gcc.exe could not be located.",
-                        "Error Locating gcc",
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Error
-                    );
-                    Application.Exit();
-                }
-                if (!File.Exists(gppPath))
-                {
-                    MessageBox.Show(
-                        "g++.exe could not be located.",
-                        "Error Locating g++",
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Error
-                    );
-                    Application.Exit();
-                }
-            }
-            else
-            {
-                gccPath = "gcc.exe";
-                gppPath = "g++.exe";
-            }
+        }
 
+        private void InitialiseCompiler(bool builtinCompiler)
+        {
+            gccPath = CompilerPath[Mode.c];
+            gppPath = CompilerPath[Mode.cpp];
+            javacPath = CompilerPath[Mode.java];
         }
 
         private void TextBoxSource_TextChanged(object sender, EventArgs e)
@@ -111,9 +106,14 @@ namespace SAPA
                 {
                     sourcePath = sourceOpenFileDialog.FileName;
                     textBoxSource.Lines = File.ReadAllLines(sourcePath);
-                    if (Path.GetExtension(sourcePath) == ".c")
+                    string extension = Path.GetExtension(sourcePath);
+                    if (extension == ".c")
                     {
                         ChangeMode(Mode.c);
+                    }
+                    else if (extension == ".java")
+                    {
+                        ChangeMode(Mode.java);
                     }
                     else
                     {
