@@ -24,15 +24,15 @@ namespace SAPA
             tempPath, tempSourcePath, tempExecPath;
         string sourcePath, inputPath;
         readonly string
-            tempSourceFileName = "_sapa_source",
-            tempExecFile = "_sapa_exec.exe";
+            tempSourceFileName = "sapa_source",
+            tempExecFile = "sapa_exec.exe";
 
         readonly int execTimeout = 3000;
 
         private void Initialise(object sender, EventArgs e)
         {
-            path = Directory.GetCurrentDirectory();
-            tempPath = path + "/_sapa_temp";
+            path = Path.GetTempPath();  // Directory.GetCurrentDirectory();
+            tempPath = path + "/sapa";
             tempExecPath = tempPath + "/" + tempExecFile;
             try
             {
